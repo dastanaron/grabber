@@ -6,23 +6,33 @@ spl_autoload_register(function ($class) {
     
 });
 
-use classes\grabber\GetUrl;
+use classes\grabber\Grabber;
 
-$parse = new GetUrl('http://www.php.su/');
+/*
+ * Пример
+ */
 
-echo filterspaces($parse->getObject()->getValueOne('p', 'class', 'phpsulogo')) . PHP_EOL;
+$parse = new Grabber('http://www.php.su/');
 
-//$xpath = $dom->getPath('ul', 'class', 'site-footer-links float-right');
+echo $parse->initDom()
+        ->PathQuery('p', 'class', 'phpsulogo')
+        ->getValueOne();
 
-/*foreach( $xpath as $obj ) {
-	
-	dump($obj->nodeValue);
-}*/
+/*
+ * Выведет
+ *   
+ *       PHP.SU
+ */
 
-//dump($parse);
 
-//dump($dom->getValueArray('p', 'class', 'phpsulogo'));
 
+
+
+
+
+/*
+ * Дополнительные и вспомогательные функции
+ */
 function dump($data, $mode = 'console') {
     
     if ($mode=='console') {
