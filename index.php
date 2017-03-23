@@ -12,20 +12,18 @@ use classes\grabber\Grabber;
  * Пример
  */
 
-$parse = new Grabber('http://www.php.su/');
+$parse = new Grabber('http://php.net/', ['include'=>true]);
 
-echo $parse->initDom()
-        ->PathQuery('p', 'class', 'phpsulogo')
-        ->getValueOne();
+dump( $parse->initDom()
+        ->PathQuery('a', 'class', 'brand')
+        ->AddPathQuery('img')
+        ->PathExec()
+        ->getAttributeOne('src'));
 
 /*
  * Выведет
  *   
- *       PHP.SU
  */
-
-
-
 
 
 
