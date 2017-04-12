@@ -13,6 +13,8 @@ class Grabber {
     protected $response;
     
     protected $dom;
+
+    protected $xpath;
     
     protected $result_query;
     
@@ -29,6 +31,11 @@ class Grabber {
         
             $this->url = $url;
             $this->timeout = $timeout;
+
+            /*
+             * Сразу инициируем дом и он же нам запишет два обхекста в свойства xpath и dom
+             */
+            $this->initDom();
         
         }
         else {
@@ -145,23 +152,37 @@ class Grabber {
         @$dom->loadHTML($this->response);
         
         $this->dom = $dom;
+
+        $this->xpath = new \DomXPath($this->dom);
         
-        $this->Log('Инициирован DOM объект');
+        $this->Log('Инициирован DomDocument объект и объект DomXPath');
         return $this;
           
     }
     
     /*
-     * Вернуть дом-объект для целей минующих данную библиотеку
+     * Вернуть DomDocument-объект для целей минующих данную библиотеку
      */
     
     public function getDom() {
         
         
-        $this->Log('Получен DOM объект');
+        $this->Log('Получен DomDocument объект');
         return $this->dom;
         
     }
+
+    /*
+     * Вернуть DomXPath-объект для других целей
+     */
+
+    public function getXpath(){
+
+        $this->Log('Получен DomXPath объект');
+        return $this->xpath;
+
+    }
+
     /*
      * Вернуть просто HTML содержимое URL
      */
@@ -247,9 +268,8 @@ class Grabber {
      * Выполняет поисковый запрос
      */
     public function PathExec() {
-        
-        $xpath = new \DomXPath($this->dom);
-        $res = $xpath->query($this->search);
+
+        $res = $this->xpath->query($this->search);
         
         $this->result_query = $res;
         

@@ -7,15 +7,17 @@ class Logger {
     public $log_dir;
     protected $pathlog = __DIR__ . '/../../';
     public $string;
-    
-    function __construct($logname='log.log', $log_dir='/logs/') {
+    protected $dateformat;
+
+    function __construct($logname='log.log', $log_dir='/logs/', $dateformat = "d.m.Y|H:i:s") {
         
         $this->logname = $logname;
         $this->log_dir = $log_dir;
+        $this->dateformat = $dateformat;
         
     }
     
-    public function Log ($string ,$print=false) {
+    public function Log ($string, $print=false) {
         
         $this->string = $string;
         
@@ -34,17 +36,20 @@ class Logger {
         
         
         
-        $this->string  = date("d.m.Y|H:i:s") . '| ' . $this->string . "|" . PHP_EOL;
-            
-        if(file_put_contents($log, $this->string, LOCK_EX | FILE_APPEND)) {
-            return true;
-        }
-        
+        $this->string  = date($this->dateformat) . '| ' . $this->string . "|" . PHP_EOL;
+
         if ($print === true) {
-            
-            $this->string;
-            
+
+            print $this->string;
+
         }
+
+        if(file_put_contents($log, $this->string, LOCK_EX | FILE_APPEND)) {
+
+            return (bool) true;
+
+        }
+
         
     }
     
