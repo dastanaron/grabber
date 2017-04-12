@@ -1,3 +1,24 @@
+История версий
+=====================
+
+V1.0 - подробное описание ниже
+V1.1 - добавлен метод getXpath, изменены принципы работы
+
+
+Описание V1.1
+=====================
+
+Добавлен метод
+getXpath() - Он  вернет DomXPath-объект
+
+Теперь не нужно вызывать метод initDom(), он сам вызывается
+в кострукторе и сразу складывает в объект объекты класса DomDocument
+и DomXPath. Его можно вызвать и это не вызовет ошибку, но сделает 1
+(возможно лишний) запрос к указанному url, и переинициирует объекты.
+
+Все примеры ниже, уже будут описаны по версии V1.1
+
+
 Описание V1.0
 =====================
 
@@ -51,13 +72,10 @@ $geturl = new Grabber('http://site.com');
 use classes\grabber\Grabber;
 $parse = new Grabber('http://www.php.su/');
 
-$parse->initDom(); //Инициирует создание dom объекта из HTML
-
 $dom = $parse->getDom(); //Вернет объект класса DOM, для дальнейшей работы
-
 ```
 
-Можно не инициировать создание объекта Dom-класса, а простополучить содержимое
+Просто получить содержимое
 в HTML
 
 ##### Пример:
@@ -75,7 +93,7 @@ $html = $parse->getHTML(); //Вернет html-содержимое
 Можно использовать свои библиотеки или иначе распорядиться содержимым.
 
 
-Если же вы инициировали создание объекта Dom, можно сделать посиковый запрос.
+Объект DomDocument инициирован, можно сделать посиковый запрос.
 
 ```php
 use classes\grabber\Grabber;
@@ -85,7 +103,7 @@ $parse = new Grabber('http://www.php.su/');
 /*
 *Данный запрос составляет поисковый запрос
 */
-$xpath = $parse->initDom()->PathQuery('p', 'class', 'phpsulogo'); 
+$xpath = $parse->PathQuery('p', 'class', 'phpsulogo'); 
 ```
 
 #### Метод PathQuery()
@@ -111,7 +129,7 @@ $value - значение селектора, (например: phpsulogo).
 
 #### Метод PathExec()
 
-Данный метод выполняет поисковый запрос образованный методами ***PathQuery
+Данный метод выполняет поисковый запрос образованный методами ***PathQuery***
 
 Теперь вам доступны следующие методы дальнейшей работы с ним:
 
@@ -127,7 +145,6 @@ $value - значение селектора, (например: phpsulogo).
 ```php
 <?php
 spl_autoload_register(function ($class) {
-    //require_once './' . $class . '.php';
     $class = str_replace('\\', '/', $class) . '.php';
     require_once($class);
     
@@ -137,8 +154,7 @@ use classes\grabber\Grabber;
 
 $parse = new Grabber('http://php.net/', ['include'=>true]);
 
-dump( $parse->initDom()
-        ->PathQuery('a', 'class', 'brand')
+dump( $parse->PathQuery('a', 'class', 'brand')
         ->AddPathQuery('img')
         ->PathExec()
         ->getAttributeOne('src'));
@@ -148,10 +164,7 @@ dump( $parse->initDom()
 ```shell
 
 www-data@web-server:~/html/grabber$ php index.php
-array(1) {
-  [0]=>
   string(26) "/images/logos/php-logo.svg"
-}
 www-data@web-server:~/html/grabber$
 
 ```
